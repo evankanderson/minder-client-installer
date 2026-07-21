@@ -9,7 +9,7 @@ inputs:
   release:
     description: 'minder client release version to be installed'
     required: false
-    default: 'latest'
+    default: '0.2.2'
   install-dir:
     description: 'Where to install the binary'
     required: false
@@ -61,6 +61,7 @@ runs:
         }
 
         minder_executable_name=minder
+        mindev_executable_name=mindev
 
         trap "popd >/dev/null" EXIT
 
@@ -136,18 +137,15 @@ runs:
 
         # Download the desired release
         $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}${compression_extension} -o ${desired_minder_filename}${compression_extension}
-        # Download the detached signature
-        $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}${compression_extension}.sig -o ${desired_minder_filename}${compression_extension}.sig
-        # Download the PEM
-        $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}.pem -o ${desired_minder_filename}.pem
+        # Download the detached bundle of signature and key
+        $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}${compression_extension}.sig -o ${desired_minder_filename}${compression_extension}.sigstore.json
 
         # Verify the signature
         log_info "Verifying signature of desired release"
         cosign verify-blob \
-          --certificate ${desired_minder_filename}.pem \
           --certificate-identity "https://github.com/mindersec/minder/.github/workflows/releaser.yml@refs/tags/${release_version}" \
           --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-          --signature ${desired_minder_filename}${compression_extension}.sig \
+          --bundle ${desired_minder_filename}${compression_extension}.sigstore.json \
           ${desired_minder_filename}${compression_extension}
 
         # Extract the desired release
@@ -170,7 +168,7 @@ runs:
 
         # Make the extracted file executable
         log_info "Making extracted file executable"
-        $SUDO chmod +x ${minder_executable_name}
+        $SUDO chmod +x ${minder_executable_name} ${mindev_executable_name}
 
         log_info "Installation complete!"
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
