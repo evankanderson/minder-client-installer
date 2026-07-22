@@ -9,7 +9,7 @@ inputs:
   release:
     description: 'minder client release version to be installed'
     required: false
-    default: '0.2.2'
+    default: 'v0.2.2'
   install-dir:
     description: 'Where to install the binary'
     required: false
@@ -137,7 +137,7 @@ runs:
 
         # Download the desired release
         $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}${compression_extension} -o ${desired_minder_filename}${compression_extension}
-        # Download the detached bundle of signature and key
+        # Download the bundle of signature and key
         $SUDO curl -fsL https://github.com/mindersec/minder/releases/download/${release_version}/${desired_minder_filename}${compression_extension}.sig -o ${desired_minder_filename}${compression_extension}.sigstore.json
 
         # Verify the signature
