@@ -37,7 +37,7 @@ runs:
           alias log_info="echo \"INFO:\""
           alias log_error="echo \"ERROR:\""
         fi
-        set -e
+        set -e -x
 
         # Check if cosign is installed
         if ! command -v cosign &> /dev/null; then
