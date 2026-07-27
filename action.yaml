@@ -70,7 +70,7 @@ runs:
 
         trap "popd >/dev/null" EXIT
 
-        pushd "$INSTALL_DIR"" > /dev/null
+        pushd "$INSTALL_DIR" > /dev/null
 
         SUDO=
         if [[ "$USE_SUDO" == "true" ]] && command -v sudo >/dev/null; then
