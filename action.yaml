@@ -163,7 +163,7 @@ runs:
             $SUDO tar -xzf ${desired_minder_filename}${compression_extension}
             ;;
           Windows|windows)
-            $SUDO Expand-Archive -Path ${desired_minder_filename}${compression_extension} -DestinationPath .
+            $SUDO powershell Expand-Archive -Path ${desired_minder_filename}${compression_extension} -DestinationPath .
             ;;
           *)
             log_error "unsupported OS ${{ runner.os }}"
@@ -186,6 +186,6 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       env:
         INSTALL_DIR: ${{ inputs.install-dir }}
-      run: echo "$INSTALL_DIR" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "$env:INSTALL_DIR" | Out-File -FilePath "$env:GITHUB_PATH" -Encoding utf8 -Append
       shell: pwsh
 
